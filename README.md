@@ -2,9 +2,15 @@
 Author: Maja Bosy
 StudentID: W20037161
 
-################################################################################################
+#############################################################################
 
 Hosted website:
+https://w20037161.nuwebspace.co.uk/cueband/app/aboutus
+
+Example account: 
+maja@gmail.com
+maja
+
 
 Dependencies:
 ├── @types/react-dom@18.2.22
