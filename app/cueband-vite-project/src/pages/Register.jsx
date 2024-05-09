@@ -12,7 +12,7 @@ import bcrypt from 'bcryptjs'
 import { LuUserPlus } from "react-icons/lu";
 import { useEffect } from 'react';
 import withAccessibilityStyles from '../components/withAccessibilityStyles';
-import { Toast } from 'react-toastify/dist/components';
+import { ToastContainer, toast } from 'react-toastify';
 
 function RegistrationForm({ onRegistration, style }) {
     const [name, setName] = useState('')

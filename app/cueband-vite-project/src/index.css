@@ -445,12 +445,13 @@ close-add-note-button:hover {
 .react-calendar-heatmap .color-empty {
   fill: #e6e6e6 !important;
 }
+
 .react-calendar-heatmap .color-strength-1 {
-  fill: #d3efff; /* Soft blue for no symptom */
+  fill: #a9f1ba; /* Soft blue for no symptom */
 }
 
 .react-calendar-heatmap .color-strength-2 {
-  fill: #a9f1ba; /* Green for mild */
+  fill: #d3efff; /* Green for mild */
 }
 
 .react-calendar-heatmap .color-strength-3 {

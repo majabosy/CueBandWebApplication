@@ -25,6 +25,7 @@ import AboutUs from './pages/AboutUs';
 import Contact from './pages/Contact';
 import Journal from './pages/Journal';
 import NotFound from './pages/NotFound';
+import { VibrationProvider } from './components/VibrationContext';
 
 function App() {
   const [isAccessibilityWindowOpen, setIsAccessibilityWindowOpen] = useState(false);
@@ -117,6 +118,7 @@ function App() {
         />
       </nav>
       <main className="flex-grow">
+        <VibrationProvider>
         <DeviceProvider device={device} setDevice={setDevice}>
           <Routes>
             <Route path="/band" element={<Band device={device} accessibilityOptions={accessibilityOptions} mac={mac} setMac={setMac} />} />
@@ -128,6 +130,7 @@ function App() {
             <Route path="*" element={<NotFound accessibilityOptions={accessibilityOptions} />} />
           </Routes>
         </DeviceProvider>
+        </VibrationProvider>
       </main>
       <footer>
         <Footer accessibilityOptions={accessibilityOptions} />

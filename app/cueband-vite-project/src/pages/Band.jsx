@@ -1,31 +1,20 @@
-/**
- * 
- * Band Page
- *
- * @author Maja Bosy
- * Student ID: W20037161
- * 
-*/
-
 import React, { useState } from 'react';
+import { useDevice } from '../components/BatteryComponent';
 import PinetimeImage from '../assets/pinetime.jpeg';
 import withAccessibilityStyles from '../components/withAccessibilityStyles';
 import { ToastContainer, toast } from 'react-toastify';
+import { useVibration } from '../components/VibrationContext';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { useDevice } from '../components/BatteryComponent';
-
 const Band = ({ style, device }) => {
-  const { batteryLevel, firmwareVersion, connectToDevice, disconnectFromDevice, isConnected } = useDevice();
-  const [errorMessage, setErrorMessage] = useState(null);
+  const { batteryLevel, firmwareVersion, connectToDevice, disconnectFromDevice, isConnected, errorMessage } = useDevice();
+  const { vibrationStrength, setVibrationStrength } = useVibration();
 
-  // Sync time and date with the device
   const syncTimeAndDate = async () => {
     const currentDate = new Date();
 
-    // Extract date and time components
     const yearValue = currentDate.getFullYear();
-    const monthValue = currentDate.getMonth() + 1; 
+    const monthValue = currentDate.getMonth() + 1; // Months are 0-based
     const dayValue = currentDate.getDate();
     const hourValue = currentDate.getHours();
     const minuteValue = currentDate.getMinutes();
@@ -33,7 +22,6 @@ const Band = ({ style, device }) => {
     const weekdayValue = currentDate.getDay();
     const microsecondValue = Math.floor(currentDate.getMilliseconds() * 1e6 / 256);
 
-    // Prepare data for time and date sync
     const dateTimeData = new Uint8Array([
       yearValue & 0xFF, yearValue >> 8,
       monthValue,
@@ -52,21 +40,27 @@ const Band = ({ style, device }) => {
         className: 'toast-success',
       });
     } catch (error) {
+      console.error('Error syncing time and date:', error);
       toast.error('Error syncing time and date', {
         className: 'toast-error',
       });
     }
   };
 
-  // Write time characteristic to the device
+
   const writeTimeCharacteristic = async (data) => {
     try {
+      if (!device) {
+        console.error('Device is not connected');
+        return;
+      }
       const gattServer = await device.gatt.connect();
       const service = await gattServer.getPrimaryService('00001805-0000-1000-8000-00805f9b34fb');
       const characteristic = await service.getCharacteristic('00002a2b-0000-1000-8000-00805f9b34fb');
-      await characteristic.writeValue(data); // Write value to characteristic
+      await characteristic.writeValue(data);
+      console.log('Data set successfully');
     } catch (error) {
-      setErrorMessage('Error setting data:', error);
+      console.error('Error setting data:', error);
     }
   };
   return (
@@ -79,7 +73,7 @@ const Band = ({ style, device }) => {
         {isConnected ? (
           <div className="flex-grow w-full md:w-1/2 md:pl-4">
             <div className="bg-white rounded-lg p-4 md:p-6">
-              <h1 className="font-extrabold text-3xl mb-4 border-b-2 border-slate-400 text-custom-blue font-serif">CueBand Details</h1>
+              <h1 className="font-extrabold text-3xl mb-4 border-b-2 border-slate-400 text-custom-blue font-serif">Details</h1>
               <div className="grid grid-cols-2 gap-2 md:gap-4 mb-4 md:mb-6">
                 <div className="text-gray-600 font-bold">Battery Level:</div>
                 <div className="text-gray-800 font-semibold">{batteryLevel}</div>
@@ -87,6 +81,21 @@ const Band = ({ style, device }) => {
                 <div className="text-gray-800 font-semibold">{firmwareVersion}</div>
                 <div className="text-gray-600 font-bold">Model:</div>
                 <div className="text-gray-800 font-semibold">CueBand</div>
+              </div>
+              <h1 className="font-extrabold text-3xl mb-4 border-b-2 border-slate-400 text-custom-blue font-serif">Settings</h1>
+              <div className="mb-4">
+                <label htmlFor="vibrationStrength" className="block text-gray-700 font-bold mb-2">Vibration Strength:</label>
+                <select id="vibrationStrength" value={vibrationStrength} onChange={(e) => setVibrationStrength(e.target.value)} className="shadow border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-blue-100 w-full">
+                  <option value="0">Off</option>
+                  <option value="1">Short</option>
+                  <option value="2">Medium</option>
+                  <option value="3">Long</option>
+                  <option value="4">2xShort</option>
+                  <option value="5">2xLong</option>
+                  <option value="6">3xShort</option>
+                  <option value="7">3xLong</option>
+                </select>
+
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <button
@@ -113,22 +122,22 @@ const Band = ({ style, device }) => {
               <ol className="pl-4 md:pl-6">
                 <li className="mb-2 md:mb-4">
                   <p className="text-gray-600 mb-1 text-justify">
-                    <span className="font-bold text-sky-800">1.</span> Ensure you are using Google Chrome or Microsoft Edge browser.
+                    <span className="font-bold text-custom-blue">1.</span> Ensure you are using Google Chrome or Microsoft Edge browser.
                   </p>
                 </li>
                 <li className="mb-2 md:mb-4">
                   <p className="text-gray-600 mb-1 text-justify">
-                    <span className="font-bold text-sky-800">2.</span> Ensure your CueBand is powered on and within close proximity.
+                    <span className="font-bold text-custom-blue">2.</span> Ensure your CueBand is powered on and within close proximity.
                   </p>
                 </li>
                 <li className="mb-2 md:mb-4">
                   <p className="text-gray-600 mb-1 text-justify">
-                    <span className="font-bold text-sky-800">3.</span> Activate the Bluetooth feature on your device.
+                    <span className="font-bold text-custom-blue">3.</span> Activate the Bluetooth feature on your device.
                   </p>
                 </li>
                 <li className="mb-2 md:mb-4">
                   <p className="text-gray-600 mb-1 text-justify">
-                    <span className="font-bold text-sky-800">4.</span> Click "Connect" and search for available devices.
+                    <span className="font-bold text-custom-blue">4.</span> Click "Connect" and search for available devices.
                   </p>
                 </li>
                 <li className="mb-2 md:mb-4">
@@ -138,7 +147,6 @@ const Band = ({ style, device }) => {
                 </li>
               </ol>
             </div>
-
             <div className="flex justify-center mt-2 mb-2">
               <button
                 onClick={connectToDevice}

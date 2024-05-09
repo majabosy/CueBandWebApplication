@@ -13,6 +13,7 @@ import withAccessibilityStyles from '../components/withAccessibilityStyles';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import NoBluetoothOverlay from '../components/NoBluetoothOverlay';
+import { useVibration } from '../components/VibrationContext';
 
 function Schedule({ style }) {
     const [activeStep, setActiveStep] = useState(0);
@@ -30,6 +31,7 @@ function Schedule({ style }) {
     const [startTime, setStartTime] = useState('');
     const [endTime, setEndTime] = useState('');
     const [showManualScheduling, setShowManualScheduling] = useState(false);
+    const { vibrationStrength } = useVibration();
 
     // Handle frequency selection
     const handleFrequencySelection = (frequency) => {
@@ -37,15 +39,18 @@ function Schedule({ style }) {
         if (frequency === 'Never') {
             setActiveStep(4);
         } else if (frequency === 'Frequently - part of every day') {
+            setSelectedDays(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']);
             setActiveStep(2);
-            setSelectedDays(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']); 
         } else if (frequency === 'Constantly - everyday') {
-            setActiveStep(2);
+            setSelectedDays(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']);
+            setSelectedPartOfDay('All Day');
+            handleIntervalSelection('All Day'); // This will set the time slots for "All Day"
+            setActiveStep(3); // Move directly to the time slot selection screen
         } else {
             setActiveStep(1);
         }
     };
-
+    
     const toggleSummary = () => {
         setShowSummary(true);
     };
@@ -162,7 +167,12 @@ function Schedule({ style }) {
     }
 
     const navigateBack = () => {
-        if (activeStep > 0) {
+        // Check the current step and adjust based on the 'droolingFrequency' selected
+        if (activeStep === 3 && droolingFrequency === 'Constantly - everyday') {
+            // Skip the 'part of the day' step and go back to frequency selection
+            setActiveStep(0);
+        } else if (activeStep > 0) {
+            // Normal behavior for other cases
             setActiveStep(current => current - 1);
         }
     };
@@ -246,7 +256,7 @@ function Schedule({ style }) {
             if (navigator.bluetooth && typeof navigator.bluetooth.requestDevice === 'function') {
                 const bluetoothDevice = await navigator.bluetooth.requestDevice({
                     filters: [
-                        { namePrefix: 'CueBand-', namePrefix: 'CueBand-' },
+                        { namePrefix: 'CueBand-'},
                     ],
                 });
                 const gattServer = await bluetoothDevice.gatt.connect();
@@ -254,8 +264,8 @@ function Schedule({ style }) {
                 setServer(gattServer);
             }
         } catch (error) {
-            toast.error('Connection failed: ' + error.message);
-            setErrorMessage('Connection failed: ' + error.message);
+            toast.error('Connection failed');
+            setErrorMessage('Connection failed');
         }
     };
 
@@ -277,7 +287,7 @@ function Schedule({ style }) {
                 fetchControlPoint(status.currentControlPoint);
             }
         } catch (error) {
-            setErrorMessage('Error fetching schedule status: ' + error.message);
+            setErrorMessage('Error fetching schedule status');
         }
     }
 
@@ -392,7 +402,7 @@ function Schedule({ style }) {
         const buffer = new ArrayBuffer(8);
         const dataView = new DataView(buffer);
         dataView.setUint16(0, 0, true); // Index
-        dataView.setUint8(2, 4); // Intensity
+        dataView.setUint8(2, vibrationStrength); // Intensity
         dataView.setUint8(3, daysByte); // Days of week mask
         dataView.setUint16(4, startMinute, true); // Start time in minutes
         dataView.setUint16(6, interval, true); // Interval in minutes

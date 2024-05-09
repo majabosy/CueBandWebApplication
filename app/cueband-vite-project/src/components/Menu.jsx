@@ -11,6 +11,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import withAccessibilityStyles from './withAccessibilityStyles';
+import CueBandLogo2 from '../assets/logo2.png';
 
 function Menu({ accessibilityOptions, style, signedIn }) {
   const [isActive, setIsActive] = useState(false);
@@ -30,7 +31,7 @@ function Menu({ accessibilityOptions, style, signedIn }) {
       <nav className="navbar custom-bg-color" style={{ fontFamily: 'DM Serif Text", serif', ...style }}>
         <div className="logo">
           <Link to="/aboutus">
-            <img src="/src/assets/logo2.png" alt="Cue Band Logo" className="logo-image" style={{ width: '120px', height: 'auto' }} />
+            <img src={CueBandLogo2} alt="Cue Band Logo" className="logo-image" style={{ width: '120px', height: 'auto' }} />
           </Link>
         </div>
         <ul className={`navMenu ${isActive ? 'active' : ''}`} role="menubar">
