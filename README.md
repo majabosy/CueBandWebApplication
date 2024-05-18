@@ -1,48 +1,95 @@
-# CueBandWebsite
-Author: Maja Bosy
-StudentID: W20037161
+# Cue Band Web Application
 
-#############################################################################
+## Overview
 
-Hosted website:
-https://w20037161.nuwebspace.co.uk/cueband/app/aboutus
+The Cue Band Web Application is a project developed by Maja Bosy for the KV6003 Individual Computing Project module. 
+The Cue Band Web Application is an extension of the Cue Band project, developed to address accessibility challenges faced by individuals with Parkinson's Disease (PD). 
+It offers a user-friendly web interface, complementing the existing mobile app, to provide an alternative access point for users who find the mobile interface challenging. 
+The application aims to enhance accessibility, improve user experience, and contribute to ongoing research and development efforts within the Cue Band initiative.
 
-Example account: 
-maja@gmail.com
-maja
+## Student Information
 
+- **Name:** Maja Bosy
+- **Student ID:** W20037161
+- **Module:** KV6003 Individual Computing Project
+- **Supervisor:** Kyle Montague
+- **Second Marker:** Hasan Kivrak
 
-Dependencies:
-├── @types/react-dom@18.2.22
-├── @types/react@18.2.64
-├── @vitejs/plugin-react-swc@3.6.0
-├── autoprefixer@10.4.18
-├── bcrypt@5.1.1
-├── bcryptjs@2.4.3
-├── date-fns@3.6.0
-├── eslint-plugin-react-hooks@4.6.0
-├── eslint-plugin-react-refresh@0.4.6
-├── eslint-plugin-react@7.34.1
-├── eslint@8.57.0
-├── fs@0.0.1-security
-├── https@1.0.0
-├── jspdf@2.5.1
-├── jszip@3.10.1
-├── jwt-decode@4.0.0
-├── postcss@8.4.37
-├── react-calendar-heatmap@1.9.0
-├── react-calendar@4.8.0
-├── react-day-picker@8.10.1
-├── react-dom@18.2.0
-├── react-hot-toast@2.4.1
-├── react-icons@5.1.0
-├── react-router-dom@6.22.3
-├── react-spring@9.7.3
-├── react-toastify@10.0.5
-├── react-tooltip@5.26.3
-├── react-transition-group@4.4.5
-├── react@18.2.0
-├── tailwindcss@3.4.1
-└── vite@5.1.6
+## Usage
 
- 
+Before running the Cue Band Web Application, ensure you have Node.js and Tailwind CSS installed on your machine. 
+
+To install all libraries, please run:
+npm install
+
+To install Tailwind CSS, please run:
+npm install tailwindcss
+
+To use the Cue Band Web Application:
+
+1. Launch the development server by running `npm run dev`.
+2. Open your web browser and navigate to `http://localhost:3000`.
+3. Explore the various features of the application.
+
+## Hosted Website
+
+The Cue Band Web Application is also hosted online. 
+You can access it [here](https://w20037161.nuwebspace.co.uk/cueband/app/aboutus).
+
+## Bluetooth Functionality
+
+To enable the Bluetooth functionalities, the band needs to be bonded via Lightblue. 
+Lightblue is a Bluetooth utility application that facilitates the bonding process, establishing a secure connection between the CueBand device and the web application.
+
+- **UUID:** 0E1D0004-9D33-4E5E-AEAD-E062834BD8BB
+
+## Example User
+
+For testing purposes, you can log in with the following example user credentials:
+
+- **Email:** maja@gmail.com
+- **Password:** maja
+
+## Features
+
+### Band
+
+- **Band Connection:** Users can connect their CueBand device to the web application via Bluetooth.
+- **Band Disconnection:** Users can disconnect their CueBand device from the web application.
+- **Set Band Date and Time:** Users can synchronize the date and time of their CueBand device with the web application.
+
+### Journal
+
+- **Existing Note Entries Retrieval:** Users can view their existing journal entries upon logging in.
+- **Note Entry and Retrieval:** Users can add new notes to their journal and view them later.
+- **Set Journal through Questionnaire:** Users can set their journal entries manually or through a questionnaire.
+- **View Heatmap:** Users can view a heatmap representation of their journal entries.
+
+### Scheduling (Cueing)
+
+- **Set Schedule:** Users can set their cueing schedule through the web application, which reflects on the CueBand device.
+- **Cueing Mode:** Users can choose between two styles of setting up cueing: manual or questionnaire.
+
+### Authentication/Registration
+
+- **User Registration:** Users can register for an account on the website by providing necessary details.
+- **User Authentication:** Users can log in to their accounts using their credentials.
+- **User Log Out:** Loggeg in users can log out from their accounts.
+- **User Authentication Failure Handling:** Users entering incorrect credentials should be notified about the authentication failure.
+
+## Technologies Used
+
+### Front-end:
+- React: JavaScript library for building user interfaces.
+- HTML: Standard markup language for creating web pages.
+- Tailwind CSS: Utility-first CSS framework for styling.
+
+### Back-end:
+- PHP: Server-side scripting language for web development.
+
+### Database:
+- SQLite: Lightweight relational database management system.
+
+### Authentication and Security:
+- Bcrypt library: Hashing library for secure password storage.
+- JSON Web Token (JWT): Standard for creating access tokens.
