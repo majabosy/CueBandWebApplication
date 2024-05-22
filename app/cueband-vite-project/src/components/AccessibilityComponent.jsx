@@ -10,10 +10,12 @@
 import React from 'react';
 import FontSizeButton from './FontSizeButton';
 
+// AccessibilityToggle functional component
 const AccessibilityToggle = ({
     accessibilityOptions,
     onTextSizeChange,
 }) => {
+    // Rendering accessibility options
     return (
         <div>
             <div>

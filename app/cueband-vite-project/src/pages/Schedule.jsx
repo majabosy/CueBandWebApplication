@@ -16,7 +16,7 @@ import NoBluetoothOverlay from '../components/NoBluetoothOverlay';
 import { useVibration } from '../components/VibrationContext';
 
 function Schedule({ style }) {
-        // State variables to manage different aspects of the scheduling
+    // State variables to manage different aspects of the scheduling
     const [activeStep, setActiveStep] = useState(0);
     const [droolingFrequency, setDroolingFrequency] = useState('');
     const [selectedDays, setSelectedDays] = useState([]);
@@ -259,6 +259,7 @@ function Schedule({ style }) {
         }
     }, [server]);
 
+    // Function to handle manual connection attempt
     const handleTryConnect = async () => {
         try {
             if (navigator.bluetooth && typeof navigator.bluetooth.requestDevice === 'function') {
@@ -277,7 +278,7 @@ function Schedule({ style }) {
         }
     };
 
-
+    // Function to fetch schedule status
     async function fetchScheduleStatus() {
         if (!server) {
             setErrorMessage('Bluetooth GATT server not connected.');
@@ -299,6 +300,7 @@ function Schedule({ style }) {
         }
     }
 
+    // Function to fetch control point data
     async function fetchControlPoint() {
         if (!server) {
             setErrorMessage('Bluetooth GATT server not connected.');
@@ -529,6 +531,8 @@ function Schedule({ style }) {
         }
         return result.slice(0, -2);  // Remove trailing comma and space
     }
+
+    // Function to parse schedule status data
     function parseScheduleStatus(data) {
         const dataView = new DataView(data.buffer);
         return {
@@ -546,6 +550,7 @@ function Schedule({ style }) {
         return `${formattedHours}:${formattedMinute}`;
     };
 
+    // Function to handle selection of time slot
     const handleTimeSlotSelection = (slot) => {
         let updatedSelection = [...selectedTimeSlots];
         const index = selectedTimeSlots.findIndex(s => s.label === slot.label);
@@ -562,6 +567,7 @@ function Schedule({ style }) {
         toggleSummary(); // Assuming this updates a view or similar
     };
 
+    // Function to handle scheduling
     async function handleSchedule() {
         await clearUnusedControlPoints()
         await setScheduleControlPoints()
@@ -569,6 +575,7 @@ function Schedule({ style }) {
         toast.success('Schedule set successfully!');
     }
 
+    // Function to toggle manual scheduling view
     const toggleManualScheduling = () => {
         setShowManualScheduling(prevState => !prevState);
     };

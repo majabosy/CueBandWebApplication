@@ -13,15 +13,19 @@ import { useLocation } from 'react-router-dom';
 import withAccessibilityStyles from './withAccessibilityStyles';
 import CueBandLogo2 from '../assets/logo2.png';
 
+// Functional component for Menu
 function Menu({ accessibilityOptions, style, signedIn }) {
+  // State variables
   const [isActive, setIsActive] = useState(false);
   const [activeLink, setActiveLink] = useState("");
   const location = useLocation();
 
+  // Effect hook to update active link based on location change
   useEffect(() => {
     setActiveLink(location.pathname);
   }, [location]);
 
+  // Function to toggle active class for menu
   const toggleActiveClass = () => {
     setIsActive(!isActive);
   };

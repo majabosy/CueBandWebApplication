@@ -11,12 +11,15 @@ import React from 'react';
 import CalendarHeatmap from 'react-calendar-heatmap';
 import 'react-calendar-heatmap/dist/styles.css';
 
+// HeatmapCalendar functional component
 const HeatmapCalendar = ({ diaryData, onDayClick }) => {
+  // Formatting diary data into events
   const events = diaryData.map(entry => ({
     date: new Date(entry.date), 
     count: entry.power,
   }));
 
+  // Rendering HeatmapCalendar component
   return (
     <div className="heatmap-calendar-container" style={{ background: '#f8f8f8', padding: '30px' }}>
       <CalendarHeatmap

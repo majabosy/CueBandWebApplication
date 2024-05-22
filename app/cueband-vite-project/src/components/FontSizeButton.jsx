@@ -8,9 +8,9 @@
 */
 
 import React from 'react';
-
+// FontSizeButton functional component
 const FontSizeButton = ({ currentTextSize, onTextSizeChange }) => {
-    const fontSizes = ['small', 'medium', 'large']; 
+    const fontSizes = ['small', 'medium', 'large']; // Available font sizes
 
     return (
         <div>

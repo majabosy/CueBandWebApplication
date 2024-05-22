@@ -5,7 +5,8 @@ const VibrationContext = createContext();
 export const useVibration = () => useContext(VibrationContext);
 
 export const VibrationProvider = ({ children }) => {
-    const [vibrationStrength, setVibrationStrength] = useState(2); // Default to medium
+    // State variable for vibration strength with default value set to medium
+    const [vibrationStrength, setVibrationStrength] = useState(2); 
 
     return (
         <VibrationContext.Provider value={{ vibrationStrength, setVibrationStrength }}>

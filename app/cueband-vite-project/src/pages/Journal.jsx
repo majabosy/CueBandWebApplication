@@ -80,7 +80,7 @@ function Journal({ server, fetchScheduleStatus, accessibilityOptions, style, use
       .then(response => {
         if (response.status === 204) {
           toast.success('Note updated successfully!', {
-            autoClose: 500,
+            autoClose: 500, // Auto-closing toast after 500 milliseconds
             onClose: () => {
               window.location.reload();
             },
@@ -125,6 +125,7 @@ function Journal({ server, fetchScheduleStatus, accessibilityOptions, style, use
       })
   }
 
+  // Mapping journal entries to JSX elements
   const diaryJSX = journal.map((item, index) => (
     <div key={index} className="bg-blue-50 shadow-md p-8 mb-10" style={style}>
       {/* Date and Hour */}
@@ -159,10 +160,13 @@ function Journal({ server, fetchScheduleStatus, accessibilityOptions, style, use
     </div>
   ));
 
+  // State hook for the current day
   const [theDay, getTheDay] = useState('');
 
+  // Effect hook to update the current day and set a timer for the next day
   useEffect(() => {
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    // Current date
     const now = new Date();
     getTheDay(days[now.getDay()]);
 
@@ -174,34 +178,40 @@ function Journal({ server, fetchScheduleStatus, accessibilityOptions, style, use
     return () => clearTimeout(timer);
   }, []);
 
+  // Function to close the note overlay
   const closeNoteOverlay = () => {
     setShowNoteOverlay(false);
   };
 
+  // Function to close the heatmap overlay
   const closeHeatmapOverlay = () => {
     setHeatmapOverlay(false);
   };
 
+  // Function to toggle the note overlay
   const toggleNoteOverlay = () => {
     setShowNoteOverlay(!showNoteOverlay);
   };
 
+  // Function to toggle the heatmap overlay
   const toggleHeatmapOverlay = () => {
     setHeatmapOverlay(!showHeatmapOverlay);
   };
 
+  // Function to handle saving diary entry
   const handleSave = () => {
     updateDiary();
     setShowEditNoteOverlay(false);
   };
 
-
+  // Function to decode HTML entities
   function decodeHtml(html) {
     var txt = document.createElement("textarea");
     txt.innerHTML = html;
     return txt.value;
   }
 
+  // Function to handle editing diary entry
   const handleEdit = (item) => {
     const decodedNote = decodeHtml(item.note);
     setNote(decodedNote);

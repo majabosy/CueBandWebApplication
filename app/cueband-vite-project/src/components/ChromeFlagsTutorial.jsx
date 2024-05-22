@@ -9,12 +9,15 @@
 
 import React from 'react';
 
+// ChromeFlagsTutorial functional component
 function ChromeFlagsTutorial() {
+    // Function to close modal
     const closeModal = () => {
         const modal = document.querySelector('.modal');
         modal.style.display = 'none';
     };
-
+    
+    // Rendering ChromeFlagsTutorial component
     return (
         <div className="modal">
             <div className="modal-content">
