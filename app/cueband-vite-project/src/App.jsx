@@ -28,6 +28,7 @@ import NotFound from './pages/NotFound';
 import { VibrationProvider } from './components/VibrationContext';
 
 function App() {
+  // State variable
   const [isAccessibilityWindowOpen, setIsAccessibilityWindowOpen] = useState(false);
   const [buttonClicked, setButtonClicked] = useState(false);
   const [server, setServer] = useState(null);
@@ -40,6 +41,7 @@ function App() {
     textSize: 'normal',
   });
 
+  // Function to fetch schedule status from the Bluetooth device
   async function fetchScheduleStatus(server) {
     if (!server) {
       setErrorMessage('Bluetooth GATT server not connected.');
@@ -66,21 +68,25 @@ function App() {
     }
   }
 
+  // Spring animation for button click effect
   const buttonClickSpring = useSpring({
     transform: buttonClicked ? 'scale(1.2)' : 'scale(1)',
     config: { tension: 300, friction: 10 },
   });
 
+  // Handler for button click to toggle accessibility window
   const handleButtonClick = () => {
     setButtonClicked(true);
     setTimeout(() => setButtonClicked(false), 200);
     setIsAccessibilityWindowOpen(!isAccessibilityWindowOpen);
   };
 
+  // Handler for toggling the accessibility window
   const handleToggleAccessibilityWindow = () => {
     setIsAccessibilityWindowOpen(!isAccessibilityWindowOpen);
   };
 
+  // Handler for changing text size in accessibility options
   const handleTextSizeChange = (newSize) => {
     setAccessibilityOptions(prevOptions => ({
       ...prevOptions,
@@ -88,12 +94,14 @@ function App() {
     }));
   };
 
+  // Handler for clicking on the accessibility window
   const handleAccessibilityWindowClick = (e) => {
     if (e.target.classList.contains('accessibility-window')) {
       handleToggleAccessibilityWindow();
     }
   };
 
+  // Effect to handle initial text size change
   useEffect(() => {
     handleTextSizeChange();
   }, []);

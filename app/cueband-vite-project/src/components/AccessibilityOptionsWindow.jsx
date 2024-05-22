@@ -12,6 +12,7 @@ import React, { useEffect, useState } from 'react';
 function AccessibilityOptionsWindow({ isOpen, onClose, accessibilityOptions, onTextSizeChange }) {
     const [currentTextSize, setCurrentTextSize] = useState(accessibilityOptions.textSize || 'small');
 
+    // Set the current text size when accessibility options change
     useEffect(() => {
         setCurrentTextSize(accessibilityOptions.textSize || 'small');
     }, [accessibilityOptions]);

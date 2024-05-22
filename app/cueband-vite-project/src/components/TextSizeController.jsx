@@ -11,8 +11,10 @@ import React, { useState } from 'react';
 import FontSizeButton from './FontSizeButton';
 
 const TextSizeController = () => {
+    // State variable for text size
     const [textSize, setTextSize] = useState('small'); 
 
+    // Handler for text size change
     const handleTextSizeChange = (size) => {
         setTextSize(size); 
     };

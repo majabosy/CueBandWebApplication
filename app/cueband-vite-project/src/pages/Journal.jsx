@@ -23,6 +23,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 function Journal({ server, fetchScheduleStatus, accessibilityOptions, style, userID, setUserID }) {
+  // State variables
   const [currentDay, setCurrentDay] = useState(new Date());
   const [journal, setJournal] = useState([]);
   const [showNoteOverlay, setShowNoteOverlay] = useState(false);
@@ -32,12 +33,13 @@ function Journal({ server, fetchScheduleStatus, accessibilityOptions, style, use
   const [diaryID, setDiaryID] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
-
+  // Function to parse JWT token
   const parseJwt = (token) => {
     const decode = JSON.parse(atob(token.split('.')[1]));
     return decode;
   };
 
+  // Effect hook to fetch diary entries on component mount
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -49,6 +51,7 @@ function Journal({ server, fetchScheduleStatus, accessibilityOptions, style, use
     }
   }, []);
 
+  // Styles for different mood icons
   const iconStyles = {
     happy: { color: '#87D182' }, // Green
     vHappy: { color: '#5AB8F9 ' }, // Blue
@@ -56,6 +59,7 @@ function Journal({ server, fetchScheduleStatus, accessibilityOptions, style, use
     bad: { color: '#FF6666' }, // Red
   };
 
+  // Map of mood labels to corresponding emoji icons
   const emojiMap = {
     'Today was great': <BsEmojiGrinFill style={iconStyles.vHappy} />,
     'Today was okay': <BsEmojiSmileFill style={iconStyles.happy} />,
@@ -63,6 +67,7 @@ function Journal({ server, fetchScheduleStatus, accessibilityOptions, style, use
     'Today was bad': <BsEmojiFrownFill style={iconStyles.bad} />,
   };
 
+  // Function to update diary entry
   const updateDiary = () => {
     let formData = new FormData();
     formData.append('note', note);
@@ -93,6 +98,7 @@ function Journal({ server, fetchScheduleStatus, accessibilityOptions, style, use
       });
   }
 
+  // Function to fetch diary entries
   const getDiary = (userID) => {
     fetch('https://w20037161.nuwebspace.co.uk/cueband/api/diary?user=' + userID, {
       method: 'GET',

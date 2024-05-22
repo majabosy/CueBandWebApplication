@@ -11,15 +11,19 @@ import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import withAccessibilityStyles from "./withAccessibilityStyles"
 
+// Component for signing in
 function SignIn({ userID, setUserID, signedIn, setSignedIn, style }) {
+    // State variables
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
 
     const [signInError, setSignInError] = useState(false)
     const errorColour = signInError ? "bg-red-200" : "bg-slate-100"
+    
+    // Navigation hook
     const navigate = useNavigate()
 
-    // Parse JWT token
+    // Function to parse JWT token
     const parseJwt = (token) => {
         const decode = JSON.parse(atob(token.split('.')[1]));
         console.log(decode);
@@ -31,7 +35,7 @@ function SignIn({ userID, setUserID, signedIn, setSignedIn, style }) {
         return decode;
     };
 
-    // Check for token in localStorage
+    // Check for token in localStorage on component mount
     useEffect(() => {
         const token = localStorage.getItem("token");
         if (token) {
@@ -41,8 +45,9 @@ function SignIn({ userID, setUserID, signedIn, setSignedIn, style }) {
         }
     }, []);
 
-    // Sign in user
+    // Function to sign in user
     const signIn = () => {
+        // Encode email and password
         const encodedString = btoa(email + ':' + password)
         fetch('https://w20037161.nuwebspace.co.uk/cueband/api/token',
             {
@@ -61,22 +66,25 @@ function SignIn({ userID, setUserID, signedIn, setSignedIn, style }) {
             })
             .then(data => {
                 if (data && data.token) {
+                    // Save token to localStorage
                     localStorage.setItem("token", data.token);
                     const decodedToken = parseJwt(data.token);
                     setUserID(decodedToken.id)
                     setSignedIn(true);
+                    // Redirect to band page after successful sign-in
                     navigate("/band")
                 }
             })
             .catch(error => console.log(error))
     }
 
-    // Sign out user
+    // Function to sign out user
     const signOut = () => {
         localStorage.removeItem("token")
         setEmail("")
         setPassword("")
         setSignedIn(false)
+        // Redirect to aboutus page after sign-out
         navigate("/aboutus")
     }
   

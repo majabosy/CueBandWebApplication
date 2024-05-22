@@ -10,8 +10,10 @@
 import React from 'react';
 
 const NoBluetoothOverlay = ({ visible, onTryConnect }) => {
+    // If the overlay is not visible, return null
     if (!visible) return null;
 
+    // Render the overlay
     return (
         <div className="fixed inset-0 w-full min-h-screen bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white p-6 rounded-lg shadow-xl text-center">

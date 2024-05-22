@@ -11,9 +11,12 @@ import React, { useState } from 'react';
 import { Calendar } from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 
+// Component for displaying a big calendar
 const BigCalendar = ({ value, onChange }) => {
+  // State variable to manage calendar value
   const [calendarValue, setCalendarValue] = useState(value);
 
+  // Function to handle date click event
   const handleDateClick = (date) => {
     setCalendarValue(date);
     onChange(date);

@@ -5,14 +5,19 @@ import withAccessibilityStyles from '../components/withAccessibilityStyles';
 import { ToastContainer, toast } from 'react-toastify';
 import { useVibration } from '../components/VibrationContext';
 import 'react-toastify/dist/ReactToastify.css';
+import ChromeFlagsTutorial from '../components/ChromeFlagsTutorial';
 
 const Band = ({ style, device }) => {
   const { batteryLevel, firmwareVersion, connectToDevice, disconnectFromDevice, isConnected, errorMessage } = useDevice();
   const { vibrationStrength, setVibrationStrength } = useVibration();
+  const [showTutorial, setShowTutorial] = useState(false); // State to control the visibility of the tutorial
 
+  // Function to synchronize time and date with the device
   const syncTimeAndDate = async () => {
+    // Get the current date and time
     const currentDate = new Date();
 
+    // Extract individual components of the date and time
     const yearValue = currentDate.getFullYear();
     const monthValue = currentDate.getMonth() + 1; // Months are 0-based
     const dayValue = currentDate.getDate();
@@ -22,8 +27,9 @@ const Band = ({ style, device }) => {
     const weekdayValue = currentDate.getDay();
     const microsecondValue = Math.floor(currentDate.getMilliseconds() * 1e6 / 256);
 
+    // Constructing date and time data packet
     const dateTimeData = new Uint8Array([
-      yearValue & 0xFF, yearValue >> 8,
+      yearValue & 0xFF, yearValue >> 8, // Year (split into two bytes)
       monthValue,
       dayValue,
       hourValue,
@@ -31,41 +37,49 @@ const Band = ({ style, device }) => {
       secondValue,
       weekdayValue,
       microsecondValue,
-      0x01
+      0x01 // Termination flag
     ]);
 
     try {
+      // Write time and date data to the device
       await writeTimeCharacteristic(dateTimeData);
       toast.success('Time and date synced successfully', {
         className: 'toast-success',
       });
     } catch (error) {
-      console.error('Error syncing time and date:', error);
       toast.error('Error syncing time and date', {
         className: 'toast-error',
       });
     }
   };
+  // Function to handle click on tutorial link
+  const handleTutorialClick = () => {
+    setShowTutorial(prevState => !prevState); // Toggle the state
+  };
 
-
+  // Function to write time characteristic to the device
   const writeTimeCharacteristic = async (data) => {
     try {
+      // Check if device is connected
       if (!device) {
         console.error('Device is not connected');
         return;
       }
-      const gattServer = await device.gatt.connect();
-      const service = await gattServer.getPrimaryService('00001805-0000-1000-8000-00805f9b34fb');
-      const characteristic = await service.getCharacteristic('00002a2b-0000-1000-8000-00805f9b34fb');
-      await characteristic.writeValue(data);
-      console.log('Data set successfully');
+      const gattServer = await device.gatt.connect(); // Connect to GATT server
+      const service = await gattServer.getPrimaryService('00001805-0000-1000-8000-00805f9b34fb'); // Get primary service
+      const characteristic = await service.getCharacteristic('00002a2b-0000-1000-8000-00805f9b34fb'); // Get time characteristic
+      await characteristic.writeValue(data); // Write time data
     } catch (error) {
-      console.error('Error setting data:', error);
+      toast.error('Error setting data', {
+        className: 'toast-error',
+      });
     }
   };
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100" style={style}>
       <ToastContainer />
+      {showTutorial && <ChromeFlagsTutorial />}
       <main className="bg-white p-8 rounded-lg shadow-md w-full max-w-5xl flex flex-wrap justify-center items-center" aria-label="CueBand Smartwatch Information">
         <div className="flex-none mr-4 mb-4 md:mb-0">
           <img src={PinetimeImage} alt="PineTime Smartwatch" className="w-64 h-auto" aria-hidden="true" />
@@ -127,22 +141,27 @@ const Band = ({ style, device }) => {
                 </li>
                 <li className="mb-2 md:mb-4">
                   <p className="text-gray-600 mb-1 text-justify">
-                    <span className="font-bold text-custom-blue">2.</span> Ensure your CueBand is powered on and within close proximity.
+                    <span className="font-bold text-custom-blue">2.</span> Ensure the Web Bluetooth API is allowed. Don't know how? <span className="text-blue-500 cursor-pointer" onClick={handleTutorialClick}>Click here for a tutorial.</span>
                   </p>
                 </li>
                 <li className="mb-2 md:mb-4">
                   <p className="text-gray-600 mb-1 text-justify">
-                    <span className="font-bold text-custom-blue">3.</span> Activate the Bluetooth feature on your device.
+                    <span className="font-bold text-custom-blue">3.</span> Ensure your CueBand is powered on and within close proximity.
                   </p>
                 </li>
                 <li className="mb-2 md:mb-4">
                   <p className="text-gray-600 mb-1 text-justify">
-                    <span className="font-bold text-custom-blue">4.</span> Click "Connect" and search for available devices.
+                    <span className="font-bold text-custom-blue">4.</span> Activate the Bluetooth feature on your device.
                   </p>
                 </li>
                 <li className="mb-2 md:mb-4">
                   <p className="text-gray-600 mb-1 text-justify">
-                    <span className="font-bold text-sky-800">5.</span> Once your CueBand appears in the list, select it.
+                    <span className="font-bold text-custom-blue">5.</span> Click "Connect" and search for available devices.
+                  </p>
+                </li>
+                <li className="mb-2 md:mb-4">
+                  <p className="text-gray-600 mb-1 text-justify">
+                    <span className="font-bold text-custom-blue">6.</span> Once your CueBand appears in the list, select it.
                   </p>
                 </li>
               </ol>

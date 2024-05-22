@@ -64,6 +64,7 @@ function RegistrationForm({ onRegistration, style }) {
         }
     }
 
+    // Effect to update password strength when password changes
     useEffect(() => {
         if (password) {
             setPasswordStrength(checkPasswordStrength(password));
@@ -71,17 +72,20 @@ function RegistrationForm({ onRegistration, style }) {
     }, [password]);
 
 
+    // Handler for password change
     const handlePasswordChange = (e) => {
         const newPassword = e.target.value
         setPassword(newPassword)
         setPasswordStrength(checkPasswordStrength(newPassword))
     }
 
+    // Handler for confirm password change
     const handleConfirmPasswordChange = (e) => {
         const newPassword = e.target.value
         setConfirmPassword(newPassword)
     }
 
+     // Handle user registration
     const handleRegistration = () => {
         const nameRegex = /^[a-zA-Z\s]*$/
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -111,6 +115,7 @@ function RegistrationForm({ onRegistration, style }) {
             formData.append('email', email)
             formData.append('password', hashedPassword)
 
+            // Send registration request to the server
             fetch('https://w20037161.nuwebspace.co.uk/cueband/api/register', {
                 method: 'POST',
                 body: formData,

@@ -13,7 +13,9 @@ import BigCalendar from '../components/CalendarComponent';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+// Component for adding notes to the diary
 function NoteComponent({ userID, setUserID}) {
+    // State variables
     const [date, setDate] = useState('');
     const [currentDay, setCurrentDay] = useState(new Date());
     const [symptoms, setSymptoms] = useState('');
@@ -27,11 +29,13 @@ function NoteComponent({ userID, setUserID}) {
     const currentMinute = new Date().getMinutes().toString().padStart(2, '0');
     const currentTime = `${currentHour}:${currentMinute}`;
 
+    // Function to parse JWT token
     const parseJwt = (token) => {
         const decode = JSON.parse(atob(token.split('.')[1]));
         return decode;
     };
 
+    // Fetch diary entries on component mount
     useEffect(() => {
         const token = localStorage.getItem("token");
         if (token) {
@@ -41,7 +45,7 @@ function NoteComponent({ userID, setUserID}) {
         }
     }, []);
 
-
+    // Function to fetch diary entries
     const getDiary = (userID) => {
         fetch('https://w20037161.nuwebspace.co.uk/cueband/api/diary?user=' + userID, {
             method: 'GET',
@@ -56,6 +60,7 @@ function NoteComponent({ userID, setUserID}) {
             })
     }
 
+    // Function to add a new diary entry
     const addDiary = () => {
         let formData = new FormData();
         const formattedDate = `${currentDay.getFullYear()}-${(currentDay.getMonth() + 1).toString().padStart(2, '0')}-${currentDay.getDate().toString().padStart(2, '0')}`;
@@ -95,10 +100,12 @@ function NoteComponent({ userID, setUserID}) {
             });
     }
 
+    // Function to handle change in selected day
     const handleDayChange = (day) => {
         setCurrentDay(day);
     };
 
+     // Function to handle change in selected symptoms
     const handleSymptomsChange = (symptoms) => {
         setSymptoms(symptoms);
         switch (symptoms) {

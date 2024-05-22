@@ -16,6 +16,7 @@ import NoBluetoothOverlay from '../components/NoBluetoothOverlay';
 import { useVibration } from '../components/VibrationContext';
 
 function Schedule({ style }) {
+        // State variables to manage different aspects of the scheduling
     const [activeStep, setActiveStep] = useState(0);
     const [droolingFrequency, setDroolingFrequency] = useState('');
     const [selectedDays, setSelectedDays] = useState([]);
@@ -37,10 +38,10 @@ function Schedule({ style }) {
     const handleFrequencySelection = (frequency) => {
         setDroolingFrequency(frequency);
         if (frequency === 'Never') {
-            setActiveStep(4);
+            setActiveStep(4); // Skip to the final step if frequency is 'Never'
         } else if (frequency === 'Frequently - part of every day') {
             setSelectedDays(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']);
-            setActiveStep(2);
+            setActiveStep(2); 
         } else if (frequency === 'Constantly - everyday') {
             setSelectedDays(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']);
             setSelectedPartOfDay('All Day');
@@ -50,16 +51,17 @@ function Schedule({ style }) {
             setActiveStep(1);
         }
     };
-    
+
     const toggleSummary = () => {
-        setShowSummary(true);
+        setShowSummary(true); // Show the summary view
     };
 
-    // Construct days byte
+    // Construct days byte representation for selected days
     const constructDaysByte = () => {
         return selectedDays.reduce((acc, day) => acc | (1 << daysOfWeek.indexOf(day)), 0);
     };
 
+    // Toggle the selection of a day
     const toggleDaySelection = (day) => {
         setSelectedDays(prev =>
             prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day]
@@ -103,13 +105,13 @@ function Schedule({ style }) {
                 slots = [];
                 break;
         }
-        setTimeSlots(slots);
+        setTimeSlots(slots); // Set the time slots based on the part of the day selected
         setActiveStep(3);
 
     };
 
 
-   // Confirm schedule
+    // Confirm the schedule and ensure all required data is set
     const confirmSchedule = async () => {
         if (!selectedDays.length) {
             toast.error('Please select at least one day.');
@@ -136,7 +138,7 @@ function Schedule({ style }) {
         toast.success('Schedule confirmed successfully!');
     };
 
-
+    // Set schedule control points on the Bluetooth device
     async function setScheduleControlPoints() {
         if (!server) {
             setErrorMessage('Bluetooth GATT server not connected.');
@@ -159,13 +161,14 @@ function Schedule({ style }) {
             const controlPointCharacteristic = await scheduleService.getCharacteristic('faa20002-3a02-417d-90a7-23f4a9c6745f');
             await controlPointCharacteristic.writeValue(controlPointData);
             toast.success('Control points set successfully!');
-            
-            await confirmScheduleStatus(); 
+
+            await confirmScheduleStatus();
         } catch (error) {
             setErrorMessage('Error setting control points and storing the schedule: ' + error.message);
         }
     }
 
+    // Navigate back to the previous step in the schedule setup
     const navigateBack = () => {
         // Check the current step and adjust based on the 'droolingFrequency' selected
         if (activeStep === 3 && droolingFrequency === 'Constantly - everyday') {
@@ -177,6 +180,7 @@ function Schedule({ style }) {
         }
     };
 
+    // Clear unused control points on the Bluetooth device
     async function clearUnusedControlPoints() {
         if (!server) {
             setErrorMessage('Bluetooth GATT server not connected.');
@@ -204,7 +208,7 @@ function Schedule({ style }) {
             setErrorMessage('Error setting non-Saturday inactive control points: ' + error.message);
         }
     }
-
+    
     const renderButton = (text, onClick, isActive = false) => (
         <button
             onClick={onClick}
@@ -216,9 +220,13 @@ function Schedule({ style }) {
         </button>
     );
 
+    // State hook for error message
     const [errorMessage, setErrorMessage] = useState('');
+
+    // Navigation hook
     const navigate = useNavigate();
 
+    // Parses the schedule status data
     function parseScheduleStatus(data) {
         const dataView = new DataView(data.buffer);
         return {
@@ -256,7 +264,7 @@ function Schedule({ style }) {
             if (navigator.bluetooth && typeof navigator.bluetooth.requestDevice === 'function') {
                 const bluetoothDevice = await navigator.bluetooth.requestDevice({
                     filters: [
-                        { namePrefix: 'CueBand-'},
+                        { namePrefix: 'CueBand-' },
                     ],
                 });
                 const gattServer = await bluetoothDevice.gatt.connect();
@@ -330,6 +338,7 @@ function Schedule({ style }) {
         }
     }
 
+    // Fetches the current schedule status from the Bluetooth device
     async function confirmScheduleStatus() {
         if (!server) {
             setErrorMessage('Bluetooth GATT server not connected.');
@@ -347,6 +356,7 @@ function Schedule({ style }) {
         }
     }
 
+    // Sets the control points for the schedule based on selected days and times
     async function setScheduleControlPoints() {
         if (!server) {
             setErrorMessage('Bluetooth GATT server not connected.');
@@ -395,7 +405,7 @@ function Schedule({ style }) {
             setErrorMessage('Missing data or Bluetooth GATT server not connected.');
             return;
         }
-        const startMinute = timeToMinutes(startTime); 
+        const startMinute = timeToMinutes(startTime);
         const endMinute = timeToMinutes(endTime);
         const interval = endMinute - startMinute;
         const daysByte = constructDaysByte(); // Bit representation of selected days
@@ -412,7 +422,6 @@ function Schedule({ style }) {
     const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 
-
     const toggleDay = (day) => {
         setSelectedDays(prev => prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day]);
     };
@@ -422,6 +431,7 @@ function Schedule({ style }) {
         return hours * 60 + minutes;
     };
 
+    // Combines control points based on overlapping intervals
     function combineControlPoints(points) {
         const groupedByDays = points.reduce((acc, point) => {
             const key = point.days;
@@ -580,6 +590,7 @@ function Schedule({ style }) {
                     {showManualScheduling && (
                         <div className="bg-gray-100 rounded-md shadow-md p-8 mt-10 mb-4" >
                             <div className="p-2 grid grid-cols-1 gap-2 ">
+
                                 {daysOfWeek.map((day, index) => (
                                     <button key={index}
                                         onClick={() => toggleDay(day)}
@@ -756,6 +767,11 @@ function Schedule({ style }) {
                                         <p className="text-gray-700">{formatTime(point.start)} - {formatTime(point.end)}</p>
                                     </div>
                                 ))}
+                                <div className="flex justify-center items-center">
+                                    <button onClick={clearSchedule} className="bg-gray-600 font-bold hover:bg-gray-800 text-white py-1 px-2 ">
+                                        Clear Schedule
+                                    </button>
+                                </div>
                             </div>
                         ) : (
                             <div className="bg-white p-4 border border-gray-200">
